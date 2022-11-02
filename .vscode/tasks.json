@@ -1,0 +1,97 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            // 表示名
+            "label": "adb",
+            // タスクのタイプ。shellかprocessを指定
+            "type": "shell",
+            // 実行するコマンド
+            "command": "./android_device_bridge.bat", 
+            // windowsで実行された場合にデフォルトのプロパティを上書く
+            // "windows": {
+            // "command": "echo Hello Custom Task(Windows)"
+            // },
+            // タスクが所属するグループ。test、build、noneのいずれかを指定
+            "group": "none",
+            // 実行結果の表示方法について指定
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "runOptions": {
+                // プロジェクトを開くと同時に実行する
+                "runOn": "folderOpen"
+            }
+        },
+        {
+            // 表示名
+            "label": "sora-docker",
+            // タスクのタイプ。shellかprocessを指定
+            "type": "shell",
+            // 実行するコマンド
+            "command": "./sora-docker.bat", 
+            // windowsで実行された場合にデフォルトのプロパティを上書く
+            // "windows": {
+            // "command": "echo Hello Custom Task(Windows)"
+            // },
+            // タスクが所属するグループ。test、build、noneのいずれかを指定
+            "group": "none",
+            // 実行結果の表示方法について指定
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "runOptions": {
+                // プロジェクトを開くと同時に実行する
+                "runOn": "folderOpen"
+            }
+        },
+        {
+            // 表示名
+            "label": "arm",
+            // タスクのタイプ。shellかprocessを指定
+            "type": "shell",
+            // 実行するコマンド
+            "command": "./arm.bat", 
+            // windowsで実行された場合にデフォルトのプロパティを上書く
+            // "windows": {
+            // "command": "echo Hello Custom Task(Windows)"
+            // },
+            // タスクが所属するグループ。test、build、noneのいずれかを指定
+            "group": "none",
+            // 実行結果の表示方法について指定
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "runOptions": {
+                // プロジェクトを開くと同時に実行する
+                "runOn": "folderOpen"
+            }
+        },
+        {
+            // 表示名
+            "label": "http-server",
+            // タスクのタイプ。shellかprocessを指定
+            "type": "shell",
+            // 実行するコマンド
+            "command": "./http-server.bat", 
+            // windowsで実行された場合にデフォルトのプロパティを上書く
+            // "windows": {
+            // "command": "echo Hello Custom Task(Windows)"
+            // },
+            // タスクが所属するグループ。test、build、noneのいずれかを指定
+            "group": "none",
+            // 実行結果の表示方法について指定
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "runOptions": {
+                // プロジェクトを開くと同時に実行する
+                "runOn": "folderOpen"
+            }
+        }
+    ]
+}
