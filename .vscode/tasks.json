@@ -49,11 +49,11 @@
         },
         {
             // 表示名
-            "label": "arm",
+            "label": "arm_ws python",
             // タスクのタイプ。shellかprocessを指定
             "type": "shell",
             // 実行するコマンド
-            "command": "./arm.bat", 
+            "command": "./arm_ws.bat", 
             // windowsで実行された場合にデフォルトのプロパティを上書く
             // "windows": {
             // "command": "echo Hello Custom Task(Windows)"
@@ -72,7 +72,7 @@
         },
         {
             // 表示名
-            "label": "http-server",
+            "label": "http-server python",
             // タスクのタイプ。shellかprocessを指定
             "type": "shell",
             // 実行するコマンド
