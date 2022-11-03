@@ -26,11 +26,11 @@
         },
         {
             // 表示名
-            "label": "sora-docker",
+            "label": "sora docker",
             // タスクのタイプ。shellかprocessを指定
             "type": "shell",
             // 実行するコマンド
-            "command": "./sora-docker.bat", 
+            "command": "./sora_docker.bat", 
             // windowsで実行された場合にデフォルトのプロパティを上書く
             // "windows": {
             // "command": "echo Hello Custom Task(Windows)"
@@ -49,11 +49,11 @@
         },
         {
             // 表示名
-            "label": "arm_ws python",
+            "label": "kortex python",
             // タスクのタイプ。shellかprocessを指定
             "type": "shell",
             // 実行するコマンド
-            "command": "./arm_ws.bat", 
+            "command": "./kortex_python.bat", 
             // windowsで実行された場合にデフォルトのプロパティを上書く
             // "windows": {
             // "command": "echo Hello Custom Task(Windows)"
@@ -72,11 +72,11 @@
         },
         {
             // 表示名
-            "label": "http-server python",
+            "label": "http server python",
             // タスクのタイプ。shellかprocessを指定
             "type": "shell",
             // 実行するコマンド
-            "command": "./http-server.bat", 
+            "command": "./http_server.bat", 
             // windowsで実行された場合にデフォルトのプロパティを上書く
             // "windows": {
             // "command": "echo Hello Custom Task(Windows)"
