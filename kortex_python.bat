@@ -1,2 +1,2 @@
-cd .\kortex_python
+cd kortex_python
 python main.py
