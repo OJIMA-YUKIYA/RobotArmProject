@@ -1,6 +1,0 @@
-[submodule "jetson_robot_arm"]
-	path = jetson_robot_arm
-	url = https://github.com/MatusNoir/jetson_robot_arm.git
-[submodule "babylon_robotarm"]
-	path = babylon_robotarm
-	url = https://github.com/MatusNoir/babylon_robotarm.git
