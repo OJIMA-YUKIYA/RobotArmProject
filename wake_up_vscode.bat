@@ -1,4 +1,4 @@
-@echo off
+rem @echo off
 cd C:\Users\yemlab\Desktop\RobotArmProject
 code .
-exit
+exit \b
