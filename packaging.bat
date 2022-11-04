@@ -1,2 +1,2 @@
-cd .\kortex_python\examples
+cd kortex_python
 python packaging.py

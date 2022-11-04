@@ -1,2 +1,2 @@
-cd .\jetson_robot_arm\api_python\examples
+cd kortex_python
 python retract.py
