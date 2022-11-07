@@ -136,19 +136,22 @@ class GripperCommandExample:
         print("Going to position {:0.2f}...".format(finger.value))
         self.base.SendGripperCommand(gripper_command)
 
-class YemGripperHID:
+
+class YemGripper:
     Lx = 8; Ly = 29; L = (Lx**2 + Ly**2)**0.5
     def __init__(self):
         self.last_actAng = [0, 0, 0, 0]
+    def open(self):
+        self.rollInput = self.RollInput()
         import hid
         self.h = hid.device()
         self.h.close()
         while True:
             try:
+                time.sleep(1)
                 self.h.open(0x2886, 0x802f)
             except OSError as e:
                 print("not open. try to open in 1sec")
-                time.sleep(1)
             else:
                 return
 
@@ -170,8 +173,9 @@ class YemGripperHID:
         indexJ3 = Phi - indexJ2 - indexJ1
         return indexJ3, indexJ2, indexJ1
     
-    def send(self, gripFactor, rollFactor = 0, gripForce = 20):
+    def send(self, gripFactor, gripForce = 20):
         try:
+            rollFactor = self.rollInput.value
             TargAng =  [10, -10, 5, -450] #indexJ3, indexJ2, IndexJ1, Thumb (4 motors); degree * 10
             TargAng[3] = (int)(10 * (-45 + 45 * gripFactor + 5 * rollFactor)) #thumb
             x = -15 + (15+38) * gripFactor + 12 * rollFactor
@@ -217,10 +221,63 @@ class YemGripperHID:
                 print("not open. try to open")
             else:
                 return
+    def close(self):
+        self.h.close()
+        self.rollInput.close()
+
+    class RollInput:
+        value = 0
+        def __init__(self):
+            from serial import Serial
+            from serial.serialutil import SerialException
+            while 1:
+                try:
+                    time.sleep(1)
+                    self.s = Serial('COM128', 9600, timeout=1)
+                except SerialException as e:
+                    print(e)
+                else:
+                    break
+            self.s.reset_input_buffer()
+            self.run = True
+            self.readloop_thread = threading.Thread(target=self.readloop)
+            self.readloop_thread.start()
+        def readloop(self):
+            from serial.serialutil import SerialException
+            while self.run:
+                try:
+                    self.s.reset_input_buffer()
+                    recvData = self.s.read(5)
+                except SerialException as e:
+                    print(e)
+                    while 1:
+                        try:
+                            self.s.close()
+                            self.s.open()
+                        except SerialException as e:
+                            print(e)
+                            time.sleep(1)
+                        else:
+                            break
+                    continue
+                try:
+                    uint8array = np.array([recvData[0], recvData[1], recvData[2], recvData[3]], dtype='uint8')
+                except IndexError as e:
+                    print(e)
+                    continue
+                x = uint8array[0] << 24
+                x += uint8array[1] << 16
+                x += uint8array[2] << 8
+                x += uint8array[3]
+                self.value =  x/1023.0
+        def close(self):
+            self.run = False
+            time.sleep(3)
+            self.readloop_thread.join()
+            self.s.close()
 
 
-
-[vx, vy, vz, grip, angular_speed_y, recv_time] = [0, 0, 0, 0, 0, 0]
+[vx, vy, vz, grip, angular_speed_y, recv_time, yemGripper] = [0, 0, 0, 1, 0, 0, None]
 
 
 def convert(client, server, message):
@@ -239,16 +296,16 @@ def convert(client, server, message):
         angular_speed_y = read_array[4]
 
 def main():
-    global vx, vy, vz, grip, recv_time
-
-    yemGripperHID = YemGripperHID()
+    global vx, vy, vz, grip, recv_time, yemGripper
+    yemGripper = YemGripper()
+    yemGripper.open()
     for cout in range(0,2):
         for gripFactor in range(10, -1, -1):
-            yemGripperHID.send(gripFactor/10, 0)
+            yemGripper.send(gripFactor/10, 0)
             print(gripFactor)
             time.sleep(0.2)
         for gripFactor in range(0, 11, 1):
-            yemGripperHID.send(gripFactor/10, 0)
+            yemGripper.send(gripFactor/10, 0)
             print(gripFactor)
             time.sleep(0.2)
     
@@ -291,9 +348,9 @@ def main():
                         print(vx, vy, vz, grip)
                         time.sleep(0.1)
                         # grip
-                        example = GripperCommandExample(base)
-                        example.ExampleSendGripperCommands(grip)
-                        yemGripperHID.send(grip, 0)
+                        # example = GripperCommandExample(base)
+                        # example.ExampleSendGripperCommands(grip)
+                        yemGripper.send(grip)
 
                     else:
                         success &= example_twist_command(base, 0, 0, 0, 0)
@@ -320,4 +377,8 @@ def wsserver_run():
 
 if __name__ == "__main__":
     wsserver_run()
-    exit(main())
+    try:
+        exit(main())
+    except KeyboardInterrupt:
+        print('exit main')
+        yemGripper.close()
