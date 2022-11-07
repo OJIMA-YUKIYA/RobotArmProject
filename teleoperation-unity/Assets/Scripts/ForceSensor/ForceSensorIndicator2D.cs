@@ -109,10 +109,11 @@ public class ForceSensorIndicator2D : MonoBehaviour {
             }
         }
     }
-    public bool TouchedSensor(ref int[,,] pressureDistribution)
+    public int TouchedSensor(ref int[,,] pressureDistribution)
     {
         int index = 0;
-        var TouchedSensor = false;
+        //var TouchedSensor = false;
+        int pv_sum = 0;
         for (var finger = 0; finger < ForceSensor.FINGER_NUM; finger++)
         {
             for (var x = 0; x < ForceSensor.SENSOR_X_NUM; x++)
@@ -125,21 +126,28 @@ public class ForceSensorIndicator2D : MonoBehaviour {
                     }
                     var img = m_SensorsObjects[index].GetComponent<Image>();
                     int pv = pressureDistribution[finger, x, y];
+                    pv_sum += pressureDistribution[finger, x, y];
                     m_SensorValTexts[index].GetComponent<TextMeshProUGUI>().text = pv.ToString();
                     float maxVal = 2000f;
                     float g = Mathf.Clamp(pv / maxVal, 0f, 1f);
                     //Debug.Log($"{this.GetType()}: {pv}");
                     index++;
                     //Debug.Log($"pressureDistribution : {pv}");
-                    if (pv >= 100)
-                    {
-                        TouchedSensor = true;
-                        continue;
-                    }
+
+                    //if (pv >= 100)
+                    //{
+                    //    TouchedSensor = true;
+                    //    continue;
+                    //}
                 }
             }
         }
-        return TouchedSensor;
+        //pv_sum = pv_sum >= 1000 ? pv_sum/15000 : 0;
+        pv_sum = pv_sum >= 1000 ? pv_sum*127/150000 : 0;
+        pv_sum = pv_sum > 127 ? (int)127 : pv_sum;
+        //Debug.Log($"pressureDistribution : {pv_sum}");
+        return pv_sum;
+        //return TouchedSensor;
     }
 
 }

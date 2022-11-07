@@ -13,7 +13,8 @@ public class SoraDataChannel : MonoBehaviour
 
     List<Sora.DataChannel> dataChannels;
     //Byte [] hapitcs = new byte[1];
-    char sendvalue;
+    //char sendvalue;
+    int sendvalue;
 
     // Start is called before the first frame update
     void Start()
@@ -99,20 +100,28 @@ public class SoraDataChannel : MonoBehaviour
         {
             sora.DispatchEvents();
             sora.OnRender();
-            if (ForceSensor.touched == true)
-            {
-                sendvalue = (char)1;
-            }
-            else
-            {
-                sendvalue = (char)0;
-            }
+            //if (ForceSensor.touched == true)
+            //{
+            //    sendvalue = (char)1;
+            //}
+            //else
+            //{
+            //    sendvalue = (char)0;
+            //}
+            
+            sendvalue = (char)ForceSensor.pv_sum;
+
             //byte[] byteArray = BitConverter.GetBytes(sendvalue);
             byte[] byte_array = new byte[] { (byte)sendvalue };
+            Debug.Log($"SendValue: {byte_array[0]}");
             sora.SendMessage(dataChannelLabel, byte_array);
-            Debug.Log($"byte_array[0]:{byte_array[0]}");
-            send_interval = 0;
+            //Debug.Log($"byte_array[0]:{byte_array[0]}");
+            //Debug.Log($"SendValue: {ForceSensor.pv_sum} : {sendvalue}");
+            //send_interval = 0;
 
+            //byte[] bytes_array = new byte[] {(byte)sendvalue};
+            //bytes_array = BitConverter.GetBytes(sendvalue);
+            //Debug.Log(bytes_array[0]);
 
 
             yield return new WaitForSeconds(.1f);

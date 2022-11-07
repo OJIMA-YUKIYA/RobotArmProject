@@ -51,7 +51,8 @@ public class ForceSensor : MonoBehaviour {
     int u_timer = 0, prev_t = 0;
     bool SerialDataSendRequest = false, SaveDataFlag = false;
 
-    public static bool touched;
+    //public static bool touched; //島田追加
+    public static int pv_sum; //島田追加
 
 
     void Awake() {
@@ -182,7 +183,8 @@ public class ForceSensor : MonoBehaviour {
         forceSensorIndicator2D.UpdateDisplay(ref PressureDistribution); // Unityの画面上でデータを視覚化するための処理
         hv513.CalcIntensityWithForce(ref PressureDistribution); // 圧力センサのデータを元に、電気刺激の強度を設定する
         forceSensorSerialHandler.WriteByte(PC_ESP32_MEASURE_REQUEST);
-        touched = forceSensorIndicator2D.TouchedSensor(ref PressureDistribution); //島田追加
+        //touched = forceSensorIndicator2D.TouchedSensor(ref PressureDistribution); //島田追加
+        pv_sum = forceSensorIndicator2D.TouchedSensor(ref PressureDistribution); //島田追加
     }
 
     IEnumerator OffsetProcess() {
