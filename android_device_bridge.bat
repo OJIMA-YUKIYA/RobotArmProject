@@ -6,8 +6,7 @@
     if %errorlevel% neq 0 (
         timeout 3
         goto :loop1
-    )
-    else (
+    ) else (
         goto :loopout1
     )
 goto :loop1
@@ -16,12 +15,11 @@ goto :loop1
 
 :loop2
     adb devices
-    adb reverse tcp:8000 tcp:8001
+    adb reverse tcp:9001 tcp:9001
     if %errorlevel% neq 0 (
         timeout 3
         goto :loop2
-    ) 
-    else (
+    ) else (
         goto :loopout2
     ) 
 goto :loop2

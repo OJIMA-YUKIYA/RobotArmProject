@@ -48,7 +48,8 @@ public class HV513 : MonoBehaviour {
     private int m_Polarity = ESP32_INIT_POLARITY; // 1: positive, -1: negative
     //public int volume { get; private set; } = 0;
     public int volume = 0;
-    public int width { get; private set; } = 50;
+    //public int width { get; private set; } = 50;
+    public int width = 50;
     private bool m_IsStimulation = true;
     public Mode mode { get; private set; } = Mode.VerticalBar;
     // public Mode mode { get; private set; }

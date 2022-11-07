@@ -173,14 +173,15 @@ class YemGripper:
         indexJ3 = Phi - indexJ2 - indexJ1
         return indexJ3, indexJ2, indexJ1
     
-    def send(self, gripFactor, gripForce = 20):
+    def send(self, gripFactor, gripForce = 25):
         try:
             rollFactor = self.rollInput.value
+            print('rollFactor', rollFactor)
             TargAng =  [10, -10, 5, -450] #indexJ3, indexJ2, IndexJ1, Thumb (4 motors); degree * 10
             TargAng[3] = (int)(10 * (-45 + 45 * gripFactor + 5 * rollFactor)) #thumb
-            x = -15 + (15+38) * gripFactor + 12 * rollFactor
-            y = 50 + (-50+25) * gripFactor - 3 * rollFactor - gripForce * gripFactor
-            Phi = 12 + (-12-92)  * gripFactor + 20 * rollFactor
+            x = -10 + (10+33) * gripFactor + 16 * rollFactor
+            y = 45 + (-45+25) * gripFactor - 3 * rollFactor - gripForce * gripFactor
+            Phi = 10 + (-10-94)  * gripFactor + 30 * rollFactor
             inv = self.invkinematic(x, y, Phi)
             TargAng[0] = (int)(10*inv[0])#J3
             TargAng[1] = (int)(10*inv[1])#J2
@@ -269,7 +270,7 @@ class YemGripper:
                 x += uint8array[1] << 16
                 x += uint8array[2] << 8
                 x += uint8array[3]
-                self.value =  x/1023.0
+                self.value =  2.0*(x/1023.0 - 0.5)
         def close(self):
             self.run = False
             time.sleep(3)
@@ -345,7 +346,7 @@ def main():
                     if time.time() - recv_time < 0.2:
                         stop_count = 0
                         success &= example_twist_command(base, vx, vy, vz, angular_speed_y)
-                        print(vx, vy, vz, grip)
+                        # print(vx, vy, vz, grip)
                         time.sleep(0.1)
                         # grip
                         # example = GripperCommandExample(base)
