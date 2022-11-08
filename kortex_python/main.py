@@ -300,15 +300,15 @@ def main():
     global vx, vy, vz, grip, recv_time, yemGripper
     yemGripper = YemGripper()
     yemGripper.open()
-    for cout in range(0,2):
-        for gripFactor in range(10, -1, -1):
-            yemGripper.send(gripFactor/10, 0)
-            print(gripFactor)
-            time.sleep(0.2)
-        for gripFactor in range(0, 11, 1):
-            yemGripper.send(gripFactor/10, 0)
-            print(gripFactor)
-            time.sleep(0.2)
+    # for cout in range(0,2):
+    #     for gripFactor in range(10, -1, -1):
+    #         yemGripper.send(gripFactor/10, 0)
+    #         print(gripFactor)
+    #         time.sleep(0.2)
+    #     for gripFactor in range(0, 11, 1):
+    #         yemGripper.send(gripFactor/10, 0)
+    #         print(gripFactor)
+    #         time.sleep(0.2)
     
     # Import the utilities helper module
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
