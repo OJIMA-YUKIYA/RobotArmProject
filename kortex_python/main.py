@@ -44,7 +44,7 @@ def check_for_end_or_abort(e):
             e.set()
     return check
  
-def example_move_to_home_position(base):
+def example_move(base, name):
     # Make sure the arm is in Single Level Servoing mode
     base_servo_mode = Base_pb2.ServoingModeInformation()
     base_servo_mode.servoing_mode = Base_pb2.SINGLE_LEVEL_SERVOING
@@ -58,7 +58,7 @@ def example_move_to_home_position(base):
     action_handle = None
     # print(action_list)
     for action in action_list.action_list:
-        if action.name == "Home":
+        if action.name == name:
             action_handle = action.handle
 
     if action_handle == None:
@@ -295,9 +295,13 @@ def convert(client, server, message):
 
     if len(read_array) > 4:
         angular_speed_y = read_array[4]
+key_value = ''
+key_status = False
+
+base = None
 
 def main():
-    global vx, vy, vz, grip, recv_time, yemGripper
+    global base, vx, vy, vz, grip, recv_time, yemGripper, key_status, key_value
     yemGripper = YemGripper()
     yemGripper.open()
     # for cout in range(0,2):
@@ -332,7 +336,7 @@ def main():
                 # Example core
                 success = True
 
-                success &= example_move_to_home_position(base)
+                success &= example_move(base, 'Home')
                 feedback = base_cyclic.RefreshFeedback()
                 print('World Positoin(m) x {:.2f} y {:.2f} z {:.2f}'.format(feedback.base.tool_pose_x, feedback.base.tool_pose_y, feedback.base.tool_pose_z))
                 print('World Eular Rotation(deg) x {:.2f} y {:.2f} z {:.2f}'.format(feedback.base.tool_pose_theta_x, feedback.base.tool_pose_theta_y, feedback.base.tool_pose_theta_z), end='\n\n')
@@ -343,6 +347,18 @@ def main():
                 example = GripperCommandExample(base)
 
                 while 1:
+                    if key_status:
+                        key_status = False
+                        if key_value == 'h':
+                            success &= example_move(base, 'Home')
+                        elif key_value == 'r':
+                            success &= example_move(base, 'Retract')
+                        elif key_value == 'p':
+                            success &= example_move(base, 'Packaging')
+                        elif key_value == '\x03':
+                            base.Stop()
+                            return 0
+                        continue
                     if time.time() - recv_time < 0.2:
                         stop_count = 0
                         success &= example_twist_command(base, vx, vy, vz, angular_speed_y)
@@ -376,10 +392,28 @@ def wsserver_run():
     wsserver.set_fn_message_received(convert)
     wsserver.run_forever(threaded=True)
 
+run = True
+def key_loop():
+    global base, key_status, key_value, run
+    from readchar import readchar
+    while run:
+        key_value = readchar()
+        key_status = True
+        if key_value == '\x03':
+            base.Stop()
+
+
 if __name__ == "__main__":
     wsserver_run()
+    th_key_loop = threading.Thread(target=key_loop)
+    th_key_loop.start()
     try:
         exit(main())
-    except KeyboardInterrupt:
+    except:
         print('exit main')
         yemGripper.close()
+        run = False
+    else:
+        yemGripper.close()
+        run = False
+

@@ -127,9 +127,9 @@ def main():
 
         # Example core
         success = True
-        example = GripperCommandExample(base)
-        example.ExampleSendGripperCommands(1)
-        time.sleep(5)
+        # example = GripperCommandExample(base)
+        # example.ExampleSendGripperCommands(1)
+        # time.sleep(5)
         success &= example_move_to_retract_position(base)
 
         return 0 if success else 1
