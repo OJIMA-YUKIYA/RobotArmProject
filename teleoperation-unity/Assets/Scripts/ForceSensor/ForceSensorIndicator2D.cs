@@ -150,4 +150,36 @@ public class ForceSensorIndicator2D : MonoBehaviour {
         //return TouchedSensor;
     }
 
+    public float[] SensorTouched_Raw(ref int[,,] pressureDistribution)
+    {
+        int index = 0;
+        //var TouchedSensor = false;
+        float[] pv_sum = {0, 0};
+        for (var finger = 0; finger < ForceSensor.FINGER_NUM; finger++)
+        {
+            for (var x = 0; x < ForceSensor.SENSOR_X_NUM; x++)
+            {
+                for (var y = 0; y < ForceSensor.SENSOR_Y_NUM; y++)
+                {
+                    if (m_SensorsObjects[index] == null)
+                    {
+                        continue;
+                    }
+                    var img = m_SensorsObjects[index].GetComponent<Image>();
+                    float pv = pressureDistribution[finger, x, y];
+                    if(finger == 0)
+                    {
+                        pv_sum[0] += pressureDistribution[finger, x, y];
+                    }else if(finger == 1)
+                    {
+                        pv_sum[1] += pressureDistribution[finger, x, y];
+                    }
+                    index++;
+                }
+            }
+        }
+        return pv_sum;
+        //return TouchedSensor;
+    }
+
 }

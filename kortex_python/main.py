@@ -43,6 +43,43 @@ def check_for_end_or_abort(e):
         or notification.action_event == Base_pb2.ACTION_ABORT:
             e.set()
     return check
+
+def example_cartesian_action_movement(base, base_cyclic, px, py, pz, rx, ry, rz):
+    
+    print("Starting Cartesian action movement ...")
+    action = Base_pb2.Action()
+    action.name = "Example Cartesian action movement"
+    action.application_data = ""
+
+    feedback = base_cyclic.RefreshFeedback()
+
+    cartesian_pose = action.reach_pose.target_pose
+    cartesian_pose.x = px # (meters)
+    cartesian_pose.y = py # (meters)
+    cartesian_pose.z = pz    # (meters)
+    cartesian_pose.theta_x = rx # (degrees)
+    cartesian_pose.theta_y = ry # (degrees)
+    cartesian_pose.theta_z = rz # (degrees)
+
+    e = threading.Event()
+    notification_handle = base.OnNotificationActionTopic(
+        check_for_end_or_abort(e),
+        Base_pb2.NotificationOptions()
+    )
+
+    print("Executing action")
+    base.ExecuteAction(action)
+
+    print("Waiting for movement to finish ...")
+    finished = e.wait(TIMEOUT_DURATION)
+    base.Unsubscribe(notification_handle)
+
+    if finished:
+        print("Cartesian movement completed")
+    else:
+        print("Timeout on action notification wait")
+    return finished
+
  
 def example_move(base, name):
     # Make sure the arm is in Single Level Servoing mode
@@ -173,15 +210,15 @@ class YemGripper:
         indexJ3 = Phi - indexJ2 - indexJ1
         return indexJ3, indexJ2, indexJ1
     
-    def send(self, gripFactor, gripForce = 25):
+    def send(self, gripFactor, gripForce = 30):
         try:
             rollFactor = self.rollInput.value
             print('rollFactor', rollFactor)
             TargAng =  [10, -10, 5, -450] #indexJ3, indexJ2, IndexJ1, Thumb (4 motors); degree * 10
-            TargAng[3] = (int)(10 * (-45 + 45 * gripFactor + 5 * rollFactor)) #thumb
-            x = -10 + (10+33) * gripFactor + 16 * rollFactor
-            y = 45 + (-45+25) * gripFactor - 3 * rollFactor - gripForce * gripFactor
-            Phi = 10 + (-10-94)  * gripFactor + 30 * rollFactor
+            TargAng[3] = (int)(10 * (-30 + 40 * gripFactor + 25 * rollFactor)) #thumb
+            x =  -0+ (0+25) * gripFactor + 5 * rollFactor
+            y = 45 + (-45+25) * gripFactor + 3 * rollFactor - gripForce * gripFactor
+            Phi = 20 + (-20-135)  * gripFactor + 25 * rollFactor
             inv = self.invkinematic(x, y, Phi)
             TargAng[0] = (int)(10*inv[0])#J3
             TargAng[1] = (int)(10*inv[1])#J2
@@ -287,8 +324,8 @@ def convert(client, server, message):
     recv_time = time.time()
     read_array = np.array(message, dtype='int8')
 
-    vx = read_array[2] / 120
-    vy = -read_array[0] / 120
+    vx = read_array[2] / 100
+    vy = -read_array[0] / 100
     vz = read_array[1] / 120
 
     grip = read_array[3] / 100
@@ -300,8 +337,10 @@ key_status = False
 
 base = None
 
+MyHomePosition = {'px': 0.44, 'py': 0.19, 'pz': 0.45, 'rx': 90, 'ry':0, 'rz': 150}
+
 def main():
-    global base, vx, vy, vz, grip, recv_time, yemGripper, key_status, key_value
+    global base, vx, vy, vz, grip, recv_time, yemGripper, key_status, key_value, MyHomePosition
     yemGripper = YemGripper()
     yemGripper.open()
     # for cout in range(0,2):
@@ -350,11 +389,16 @@ def main():
                     if key_status:
                         key_status = False
                         if key_value == 'h':
-                            success &= example_move(base, 'Home')
+                            # success &= example_move(base, 'Home')
+                            success &= example_cartesian_action_movement(base, base_cyclic, MyHomePosition['px'], MyHomePosition['py'], MyHomePosition['pz'], MyHomePosition['rx'], MyHomePosition['ry'], MyHomePosition['rz'])
                         elif key_value == 'r':
                             success &= example_move(base, 'Retract')
                         elif key_value == 'p':
                             success &= example_move(base, 'Packaging')
+                        elif key_value == 'm':
+                            feedback = base_cyclic.RefreshFeedback()
+                            MyHomePosition['px'] = feedback.base.tool_pose_x; MyHomePosition['py'] = feedback.base.tool_pose_y; MyHomePosition['pz'] = feedback.base.tool_pose_z
+                            MyHomePosition['rx'] = feedback.base.tool_pose_theta_x; MyHomePosition['ry'] = feedback.base.tool_pose_theta_y; MyHomePosition['rz'] = feedback.base.tool_pose_theta_z
                         elif key_value == '\x03':
                             base.Stop()
                             return 0

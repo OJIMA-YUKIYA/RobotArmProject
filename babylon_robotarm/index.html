@@ -107,13 +107,18 @@
             
             let motionController_right = null;
             recvonly_haptics.on('message', (e) => {
-                console.log(new Int8Array(e.data)[0]);
+                // console.log(new Int8Array(e.data)[0]);
+                pulse_raw = new Int8Array(e.data)[0] / 127
+                pulse_sigmoid = Math.asinh((2*pulse_raw-1)*Math.sinh(1)) / 2 + 0.5
+                pulse_length = pulse_sigmoid >= 0.8 ? 0.8 : pulse_sigmoid;
+                console.log(pulse_length);
                 if (motionController_right) {
                     if (new Int8Array(e.data)[0] == 0){
                         motionController_right.pulse(0, 100);
                     }
                     else {
-                        motionController_right.pulse(1, 100);
+                        // motionController_right.pulse(1, 100);
+                        motionController_right.pulse(pulse_length, 100);
                     }
                 }
             });
@@ -159,24 +164,25 @@
 
                 camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
                 camera.setTarget(new BABYLON.Vector3(0, 0, 1));
+                camera.detachControl();
                 // Camera の操作を canvas 上で可能にする
-    			camera.attachControl(canvas, true);
-                camera.panningAxis._x = 0; //水平移動無し。
-                camera.panningAxis._y = 0; //垂直移動無し。
-                if (camera.inputs.attached.keyboard) {
-                    camera.inputs.attached.keyboard.detachControl();
-                }
-                if (camera.inputs.attached.pointers) {
-                    camera.inputs.attached.pointers.multiTouchPanAndZoom = false;
-                    camera.inputs.attached.pointers.multiTouchPanning = false;
-                    camera.inputs.attached.pointers.pinchInwards = false;
-                    camera.inputs.attached.pointers.pinchZoom = false;
-                    camera.inputs.attached.pointers.angularSensibilityX = 3000;
-                    camera.inputs.attached.pointers.angularSensibilityY = 3000;
-                }
-                if (camera.inputs.attached.mousewheel) {
-                    camera.inputs.attached.mousewheel.detachControl();
-                }
+    			// camera.attachControl(canvas, true);
+                // camera.panningAxis._x = 0; //水平移動無し。
+                // camera.panningAxis._y = 0; //垂直移動無し。
+                // if (camera.inputs.attached.keyboard) {
+                //     camera.inputs.attached.keyboard.detachControl();
+                // }
+                // if (camera.inputs.attached.pointers) {
+                //     camera.inputs.attached.pointers.multiTouchPanAndZoom = false;
+                //     camera.inputs.attached.pointers.multiTouchPanning = false;
+                //     camera.inputs.attached.pointers.pinchInwards = false;
+                //     camera.inputs.attached.pointers.pinchZoom = false;
+                //     camera.inputs.attached.pointers.angularSensibilityX = 3000;
+                //     camera.inputs.attached.pointers.angularSensibilityY = 3000;
+                // }
+                // if (camera.inputs.attached.mousewheel) {
+                //     camera.inputs.attached.mousewheel.detachControl();
+                // }
 
                 var arrow_mat = new BABYLON.StandardMaterial("arrow_mat", scene);
                     arrow_mat.alpha = 0.3;
@@ -190,8 +196,8 @@
                     front_arrow_cylinder.material = arrow_mat;
 
                 let count = 0;
-                let buttonPressed = false;
-                let old_buttonPressed = true;
+                let midle_buttonPressed = false;
+                let index_buttonPressed = false;
                 let ox = 0, oy = 0, oz = 0;
                 let old_ox = 0, old_oy = 0, old_oz = 0;
                 let dx = 0, dy = 0, dz = 0;
@@ -210,12 +216,15 @@
                 let dt = 0.1; // 送信間隔 (単位：秒)
 
                 setInterval(function() {
-                    if (buttonPressed && ws.readyState == 1) {
+                    if (midle_buttonPressed && ws.readyState == 1) {
                         let phi = Math.sign(dz) * Math.acos((dx)/Math.sqrt(((dx)*(dx) + (dz)*(dz)))) /Math.PI * 180;
                         ws.send(new Int8Array([(ox - old_ox)/dt*100, (oy - old_oy)/dt*100, (oz - old_oz)/dt*100, grip*100, (phi-old_phi)/dt]));
-                        console.log(new Int8Array([(ox - old_ox)/dt*100, (oy - old_oy)/dt*100, (oz - old_oz)/dt*100, grip*100, (phi-old_phi)/dt]));
-                        console.log(phi-old_phi);
+                        // console.log(new Int8Array([(ox - old_ox)/dt*100, (oy - old_oy)/dt*100, (oz - old_oz)/dt*100, grip*100, (phi-old_phi)/dt]));
+                        // console.log(phi-old_phi);
                         old_phi = phi;
+                    }
+                    else {
+                        ws.send(new Int8Array([0, 0, 0, grip*100, 0]));
                     }
                     old_ox = ox;
                     old_oy = oy;
@@ -259,14 +268,15 @@
                                 triggerComponent.onButtonStateChangedObservable.add((event) => {
                                     // get trigger
                                     grip = triggerComponent.value;
+                                    index_buttonPressed = triggerComponent.pressed;
                                 });
                                 let squeezeComponent = motionController.getComponent(xr_ids[1]);//squeeze
                                 squeezeComponent.onButtonStateChangedObservable.add(() => {
-                                    if (squeezeComponent.pressed) {
-                                        buttonPressed = true;
+                                    if (squeezeComponent.value > 0.5) {
+                                        midle_buttonPressed = true;
                                     }
                                     else {
-                                        buttonPressed = false;
+                                        midle_buttonPressed = false;
                                     }
                                 });
                                 let abuttonComponent = motionController.getComponent(xr_ids[3]);//a-button

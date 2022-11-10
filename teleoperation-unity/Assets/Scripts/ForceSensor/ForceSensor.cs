@@ -53,6 +53,7 @@ public class ForceSensor : MonoBehaviour {
 
     //public static bool touched; //島田追加
     public static int pv_sum; //島田追加
+    public static float[] pv_sum_raw; //島田追加
 
 
     void Awake() {
@@ -185,6 +186,8 @@ public class ForceSensor : MonoBehaviour {
         forceSensorSerialHandler.WriteByte(PC_ESP32_MEASURE_REQUEST);
         //touched = forceSensorIndicator2D.TouchedSensor(ref PressureDistribution); //島田追加
         pv_sum = forceSensorIndicator2D.TouchedSensor(ref PressureDistribution); //島田追加
+        pv_sum_raw = forceSensorIndicator2D.SensorTouched_Raw(ref PressureDistribution); //島田追加
+        //Debug.Log($"pv_sum_raw : {pv_sum_raw[0]} ,  {pv_sum_raw[1]}");
     }
 
     IEnumerator OffsetProcess() {

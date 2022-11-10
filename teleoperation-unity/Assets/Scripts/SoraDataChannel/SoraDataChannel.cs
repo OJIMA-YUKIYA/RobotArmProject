@@ -110,10 +110,9 @@ public class SoraDataChannel : MonoBehaviour
             //}
             
             sendvalue = (char)ForceSensor.pv_sum;
-
             //byte[] byteArray = BitConverter.GetBytes(sendvalue);
             byte[] byte_array = new byte[] { (byte)sendvalue };
-            Debug.Log($"SendValue: {byte_array[0]}");
+            //Debug.Log($"SendValue: {byte_array[0]}");
             sora.SendMessage(dataChannelLabel, byte_array);
             //Debug.Log($"byte_array[0]:{byte_array[0]}");
             //Debug.Log($"SendValue: {ForceSensor.pv_sum} : {sendvalue}");

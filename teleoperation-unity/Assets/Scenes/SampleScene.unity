@@ -1159,7 +1159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 015cdf73ec86d2e45bb6e18b25859d2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portName: COM4
+  portName: COM5
   baudRate: 921600
 --- !u!1 &585162639
 GameObject:
@@ -2830,6 +2830,7 @@ MonoBehaviour:
   electrodeIndicater2D: {fileID: 850660430}
   electrodeForceIndicator: {fileID: 1667907480}
   volume: 0
+  width: 50
   electrodeIntensities:
   - 0
   - 0
@@ -2992,7 +2993,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1429346681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3558,6 +3559,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1650869611}
+  - component: {fileID: 1650869612}
   m_Layer: 0
   m_Name: -----Experiment----
   m_TagString: Untagged
@@ -3580,6 +3582,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 25
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1650869612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1650869610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c307f75fc00a5074096b0c2f61ce17ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1667907475
 GameObject:
   m_ObjectHideFlags: 0
