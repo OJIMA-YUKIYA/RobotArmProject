@@ -213,7 +213,6 @@ class YemGripper:
     def send(self, gripFactor, gripForce = 30):
         try:
             rollFactor = self.rollInput.value
-            print('rollFactor', rollFactor)
             TargAng =  [10, -10, 5, -450] #indexJ3, indexJ2, IndexJ1, Thumb (4 motors); degree * 10
             TargAng[3] = (int)(10 * (-30 + 40 * gripFactor + 25 * rollFactor)) #thumb
             x =  -0+ (0+25) * gripFactor + 5 * rollFactor
