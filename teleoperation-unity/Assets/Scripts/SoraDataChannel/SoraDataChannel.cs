@@ -90,7 +90,9 @@ public class SoraDataChannel : MonoBehaviour
             yield return new WaitForSeconds(10);
 
 
-            sora.GetStats((stats) => { Debug.LogFormat("GetStats: {0}", stats); });
+            //sora.GetStats((stats) => { 
+            //    Debug.LogFormat("GetStats: {0}", stats);
+            //});
         }
     }
 

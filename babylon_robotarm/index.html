@@ -77,14 +77,14 @@
 
             setInterval(observe_ws_readyState, 1000)
             function observe_ws_readyState() {
-                if (ws.readyState == 3) {
+                if (ws.readyState == 3) {m6tfgvtfgcbgf67vgftc
                     ws = new WebSocket("ws://localhost:9001/ws");
                 }
             }
 
 
             const debug = true;
-            const sora = Sora.connection("ws://192.168.128.64:5000/signaling", debug);
+            const sora = Sora.connection("ws://192.168.10.156:5000/signaling", debug);
 
             const options_control = {
                 multistream : true,

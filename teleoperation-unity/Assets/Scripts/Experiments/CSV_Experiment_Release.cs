@@ -97,7 +97,7 @@ public class CSV_Experiment_Release : MonoBehaviour
                 string[] str = { "" + input_time, "" + pv_sum_raw[0], "" + pv_sum_raw[1] };
                 string str2 = string.Join(",", str);
                 sw.WriteLine(str2);
-                Debug.Log(str2);
+                //Debug.Log(str2);
 
                 if ((pv_sum_raw[0] < 1000) && (pv_sum_raw[1] < 1000)) //—¼•û‚ÌŽw‚Ìˆ³—Í‚ª0‚É‚È‚Á‚½‚çI—¹”»’èA
                 {

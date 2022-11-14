@@ -210,7 +210,7 @@ class YemGripper:
         indexJ3 = Phi - indexJ2 - indexJ1
         return indexJ3, indexJ2, indexJ1
     
-    def send(self, gripFactor, gripForce = 30):
+    def send(self, gripFactor, gripForce = 5):
         try:
             rollFactor = self.rollInput.value
             TargAng =  [10, -10, 5, -450] #indexJ3, indexJ2, IndexJ1, Thumb (4 motors); degree * 10
