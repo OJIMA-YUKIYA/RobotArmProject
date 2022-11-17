@@ -173,7 +173,6 @@ class GripperCommandExample:
         print("Going to position {:0.2f}...".format(finger.value))
         self.base.SendGripperCommand(gripper_command)
 
-
 class YemGripper:
     Lx = 8; Ly = 29; L = (Lx**2 + Ly**2)**0.5
     def __init__(self):
@@ -340,8 +339,8 @@ MyHomePosition = {'px': 0.44, 'py': 0.19, 'pz': 0.45, 'rx': 90, 'ry':0, 'rz': 15
 
 def main():
     global base, vx, vy, vz, grip, recv_time, yemGripper, key_status, key_value, MyHomePosition
-    yemGripper = YemGripper()
-    yemGripper.open()
+    # yemGripper = YemGripper()
+    # yemGripper.open()
     # for cout in range(0,2):
     #     for gripFactor in range(10, -1, -1):
     #         yemGripper.send(gripFactor/10, 0)
@@ -371,6 +370,18 @@ def main():
                 time.sleep(1)	
                 base_cyclic = BaseCyclicClient(router)
 
+                # grip = 0
+                # d = 0.01
+                # example = GripperCommandExample(base)
+                # while 1:
+                #     example.ExampleSendGripperCommands(grip)
+                #     grip += d
+                #     if grip > 1:
+                #         d = -0.01
+                #     elif grip < 0:
+                #         d = 0.01
+                #     time.sleep(0.001)
+
                 # Example core
                 success = True
 
@@ -383,6 +394,8 @@ def main():
                 euz = 0
 
                 example = GripperCommandExample(base)
+
+                grip_count = 0
 
                 while 1:
                     if key_status:
@@ -408,9 +421,9 @@ def main():
                         # print(vx, vy, vz, grip)
                         time.sleep(0.1)
                         # grip
-                        # example = GripperCommandExample(base)
-                        # example.ExampleSendGripperCommands(grip)
-                        yemGripper.send(grip)
+                        example = GripperCommandExample(base)
+                        example.ExampleSendGripperCommands(grip/2 + 0.5)
+                        # yemGripper.send(grip)
 
                     else:
                         success &= example_twist_command(base, 0, 0, 0, 0)
@@ -454,9 +467,7 @@ if __name__ == "__main__":
         exit(main())
     except:
         print('exit main')
-        yemGripper.close()
         run = False
     else:
-        yemGripper.close()
         run = False
 

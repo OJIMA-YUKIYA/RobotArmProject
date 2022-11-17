@@ -41,7 +41,7 @@ def invkinematic(x, y, Phi):
 
 gripFactor = 0#[0,1]ジョイスティックの係数
 f = 1
-gripForce = 10#大きくなるほど強く握る
+gripForce = 10 #大きくなるほど強く握る
 rollFactor = -0.9 #[-1,1]ジョイスティックの係数
 while 1:
     try:
