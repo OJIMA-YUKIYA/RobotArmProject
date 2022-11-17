@@ -23,7 +23,7 @@ public class CSV_Experiment_Release : MonoBehaviour
     void Start()
     {
         StartCoroutine(TimeManager());
-        Debug.Log("Bキーを入力して新しいファイルを作成してください。");
+        Debug.Log($"{try_num}試行目：Bキーを入力して新しいファイルを作成してください。");
     }
 
     IEnumerator TimeManager()
@@ -42,12 +42,12 @@ public class CSV_Experiment_Release : MonoBehaviour
                     string s2 = string.Join(",", s1);
                     sw.WriteLine(s2);
                     canMake = false;
-                    Debug.Log("新しいファイルを作成完了。実験開始の準備ができたらSキーを入力。");
+                    Debug.Log($"{try_num}試行目：新しいファイルを作成完了。実験開始の準備ができたらSキーを入力。");
                 }
                 else if (Input.GetKey(KeyCode.S) && canMake == false) //StartのS, 実験を開始する。
                 {
                     canStart = true; //実験を始める準備が整った。
-                    Debug.Log("実験を開始する準備ができました。掴んでスタート！");
+                    Debug.Log($"{try_num}試行目：実験を開始する準備ができました。掴んでスタート！");
                 }
                 else if (canStart == true)
                 {
@@ -64,7 +64,7 @@ public class CSV_Experiment_Release : MonoBehaviour
                         //最初判定のフラグをfalseにする
                         isFirst = false;
                         canStart = false;
-                        Debug.Log("実験が正常に開始されました。");
+                        Debug.Log($"{try_num}試行目：実験が正常に開始されました。");
                     }
                 }
                 else if (Input.GetKey(KeyCode.F) && canFinish == true)
@@ -75,7 +75,7 @@ public class CSV_Experiment_Release : MonoBehaviour
                     sw.Close();
                     canMake = true;
                     canFinish = false;
-                    Debug.Log("操作に失敗! 次にBキーを入力して新規ファイルを作成。");
+                    Debug.Log($"{try_num}試行目：操作に失敗! 次にBキーを入力して新規ファイルを作成。");
                     try_num++;
                 }
                 else if (Input.GetKey(KeyCode.C) && canFinish == true)
@@ -86,7 +86,18 @@ public class CSV_Experiment_Release : MonoBehaviour
                     sw.Close();
                     canMake = true;
                     canFinish = false;
-                    Debug.Log("操作に成功! 次にBキーを入力して新規ファイルを作成。");
+                    Debug.Log($"{try_num}試行目：操作に成功! 次にBキーを入力して新規ファイルを作成。");
+                    try_num++;
+                }
+                else if (Input.GetKey(KeyCode.R) && canFinish == true)
+                { // RetryのR, 操作に成功した時に入力。
+                    string[] str = { "Retry", "Retry", "Retry" };
+                    string str2 = string.Join(",", str);
+                    sw.WriteLine(str2);
+                    sw.Close();
+                    canMake = true;
+                    canFinish = false;
+                    Debug.Log($"{try_num}試行目：やり直し! 次にBキーを入力して新規ファイルを作成。");
                     try_num++;
                 }
 
@@ -104,7 +115,7 @@ public class CSV_Experiment_Release : MonoBehaviour
                     //終了処理
                     isFirst = true;
                     canFinish = true;
-                    Debug.Log("操作が終了! 次に失敗のFキーか, 成功のCキーを入力。");
+                    Debug.Log($"{try_num}試行目：操作が終了! 次に失敗のFキーか, 成功のCキーか, やり直しのRキーを入力。");
                 }
             }
 
